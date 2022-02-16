@@ -37,8 +37,10 @@ async function findById(scheme_id) {
     return null;
   }
 
+  console.log("RESULT", result);
+
   const scheme = {
-    scheme_id: result[0].scheme_id,
+    scheme_id: +scheme_id,
     scheme_name: result[0].scheme_name,
     steps: [],
   };
@@ -131,6 +133,10 @@ async function findSteps(scheme_id) {
     .where({ "sc.scheme_id": scheme_id })
     .orderBy("st.step_number", "ASC");
 
+  if (result[0].step_id === null) {
+    return [];
+  }
+
   return result;
   // EXERCISE C
   /*
@@ -155,14 +161,26 @@ async function findSteps(scheme_id) {
   */
 }
 
-function add(scheme) {
+async function add(scheme) {
+  let newScheme = await db("schemes").insert(scheme);
+  console.log(newScheme);
+  return findById(newScheme[0]);
   // EXERCISE D
   /*
     1D- This function creates a new scheme and resolves to _the newly created scheme_.
   */
 }
 
-function addStep(scheme_id, step) {
+async function addStep(scheme_id, step) {
+  const stepsArr = findSteps(scheme_id);
+  stepsArr.push(step);
+
+  const scheme = findById(scheme_id);
+
+  scheme.steps.push(stepsArr);
+
+  add(scheme);
+
   // EXERCISE E
   /*
     1E- This function adds a step to the scheme with the given `scheme_id`
