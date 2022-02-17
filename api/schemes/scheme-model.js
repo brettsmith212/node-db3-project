@@ -37,8 +37,6 @@ async function findById(scheme_id) {
     return null;
   }
 
-  console.log("RESULT", result);
-
   const scheme = {
     scheme_id: +scheme_id,
     scheme_name: result[0].scheme_name,
@@ -163,7 +161,6 @@ async function findSteps(scheme_id) {
 
 async function add(scheme) {
   let newScheme = await db("schemes").insert(scheme);
-  console.log(newScheme);
   return findById(newScheme[0]);
   // EXERCISE D
   /*
@@ -172,14 +169,14 @@ async function add(scheme) {
 }
 
 async function addStep(scheme_id, step) {
-  const stepsArr = findSteps(scheme_id);
+  const stepsArr = await findSteps(scheme_id);
   stepsArr.push(step);
+  // console.log(stepsArr);
+  // await db("steps").where({ scheme_id }).update(step);
 
-  const scheme = findById(scheme_id);
+  const scheme = await findById(scheme_id);
 
-  scheme.steps.push(stepsArr);
-
-  add(scheme);
+  return stepsArr;
 
   // EXERCISE E
   /*
