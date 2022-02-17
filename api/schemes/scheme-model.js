@@ -169,12 +169,19 @@ async function add(scheme) {
 }
 
 async function addStep(scheme_id, step) {
-  const stepsArr = await findSteps(scheme_id);
-  stepsArr.push(step);
+  // stepsArr.push(step);
   // console.log(stepsArr);
   // await db("steps").where({ scheme_id }).update(step);
+  // console.log(step);
+  const newStep = {
+    scheme_id: +scheme_id,
+    step_number: +step.step_number,
+    instructions: step.instructions,
+  };
+  // console.log(newStep);
+  await db("steps").insert(newStep);
 
-  const scheme = await findById(scheme_id);
+  const stepsArr = await findSteps(scheme_id);
 
   return stepsArr;
 
